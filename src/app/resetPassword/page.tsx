@@ -1,26 +1,25 @@
 "use client"
 
 import axios from "axios";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 
 const ResetPassword = () => {
-    const router = useRouter();
-
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [isPasswordReset, setIsPasswordReset] = useState(false);
+    const [token, setToken] = useState("")
 
-    const token = window.location.search.split('=')[1]
+    useEffect(() => {
+        const urlToken = window.location.search.split('=')[1]; //window is available here
+        setToken(urlToken || '')
+    }, [])
 
     const onSubmit = () => {
         if (newPassword.toLowerCase() === confirmPassword.toLowerCase()) {
             // send new password to server
             const response = axios.post('api/users/resetPassword', { token, newPassword })
             response.then(res => { res.data.success && setIsPasswordReset(true) })
-
-            // router.push('/login')
         }
     }
 
